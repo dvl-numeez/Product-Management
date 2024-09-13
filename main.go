@@ -1,8 +1,9 @@
 package main
 
-import "fmt"
+
 
 
 func main(){
-	fmt.Println("Hello")
+	srv:=GetServer(":5050",struct{}{})
+	srv.Run()
 }
