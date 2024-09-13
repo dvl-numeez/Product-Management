@@ -1,9 +1,19 @@
 package main
 
+import (
+	"context"
+	"log"
+)
+
 
 
 
 func main(){
-	srv:=GetServer(":5050",struct{}{})
+	ctx:=context.Background()
+	store,err:=GetStore(ctx)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	srv:=GetServer(": 5050",store)
 	srv.Run()
 }

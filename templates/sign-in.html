@@ -1,0 +1,24 @@
+{{template "top" .}}
+<form action="http://localhost:5050/health" method="POST">
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="username" required><br><br>
+    
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+    
+    <input id="signIn"type="submit" value="Submit">
+</form>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        signInButton = document.getElementById("signIn")
+        signInButton.onClick(()=>{
+        })
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        console.log(username)
+        console.log(password)
+    });
+</script>
+
+{{template "bottom" .}}
