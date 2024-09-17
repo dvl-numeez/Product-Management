@@ -9,6 +9,8 @@ import (
 )
 
 
+
+
 type apiFunc func(w http.ResponseWriter, r *http.Request)error
 
 type Server struct{
@@ -29,6 +31,7 @@ func(s *Server)Run(){
 	router.HandleFunc("/template/home",makeHttpHandlers(s.HandlerHomePage))
 	router.HandleFunc("/template/signIn",makeHttpHandlers(s.HandleSignInPage))
 	router.HandleFunc("/template/signUp",makeHttpHandlers(s.HandleSignUpPage))
+	router.HandleFunc("/products",makeHttpHandlers(s.HandleProducts))
 	router.HandleFunc("/signUp",makeHttpHandlers(s.HandleSignUp))
 	router.HandleFunc("/signIn",makeHttpHandlers(s.HandleSignIn))
 	if err:=http.ListenAndServe(s.address,router);err!=nil{
@@ -37,14 +40,38 @@ func(s *Server)Run(){
 }
 
 func(s *Server)HandlerHomePage(w http.ResponseWriter,r *http.Request)error{
+	username:=r.URL.Query().Get("name")
+	products,err:=s.store.GetProducts(r.Context())
+	if err!=nil{
+		return err
+	}
 	tmpl,err:=makeTemplate("templates/home.html")
 		if err!=nil{
 			return err
 		}
-		err=tmpl.Execute(w,nil)
-		if err!=nil{
-			return err
+		if username==""{
+			info := HomePageInfo{
+				Username: "Guest",
+				Products: products,
+			}
+			err=tmpl.Execute(w,info)
+			if err!=nil{
+				return err
+			}
+		}else{
+			info := HomePageInfo{
+				Username: username,
+				Products: products,
+				
+			}
+			err=tmpl.Execute(w,info)
+			if err!=nil{
+				return err
+			}
 		}
+		
+		
+		
 	return nil
 }
 func(s *Server)HandleSignInPage(w http.ResponseWriter,r *http.Request)error{
@@ -93,6 +120,21 @@ func(s *Server)HandleSignIn(w http.ResponseWriter, r *http.Request)error{
 	}
 	if pass==password{
 		http.Redirect(w,r,"/template/home",http.StatusSeeOther)
+	}
+	return nil
+}
+func(s *Server)HandleProducts(w http.ResponseWriter, r *http.Request)error{
+	type Students struct{
+		Name string
+	}
+	students:=[]Students{{Name:"Numeez"},{Name:"Usaid"},{Name:"Asif"}}
+	templ,err:=makeTemplate("templates/products.html")	
+	if err!=nil{
+		return err
+	}
+	err=templ.Execute(w,students)
+	if err!=nil{
+		return err
 	}
 	return nil
 }

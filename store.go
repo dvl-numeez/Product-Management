@@ -23,7 +23,7 @@ type UserManagement interface{
 	VerifyUser(context.Context,string)(string,error)
 }
 type ProductManagement interface{
-
+	GetProducts(context.Context)([]Product,error)
 }
 
 type MongoStore struct{
@@ -67,4 +67,22 @@ func(store *MongoStore)VerifyUser(ctx context.Context,email string)(string,error
 	}
 	return user.Password,nil
 
+}
+
+func(store *MongoStore)GetProducts(ctx context.Context)([]Product,error){
+	var products []Product
+	coll:=store.datbase.Collection("Products")
+	result,err:=coll.Find(ctx,bson.M{})
+	if err!=nil{
+		return nil,err
+	}
+	for result.Next(ctx){
+		var product Product
+		err:=result.Decode(&product)
+		if err!=nil{
+			return nil,err
+		}
+		products = append(products, product)
+	}
+	return products,nil
 }

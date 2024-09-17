@@ -1,4 +1,22 @@
 {{template "top" .}}
     <h1>This is the home page</h1>
-    <a href="http://localhost:5050/template/signIn"><h2>Sign in page</h2></a>
+    <h3>Welcome {{.Username}}</h3>
+   <table>
+       <tr>
+           <th>Product Name</th>
+           <th>Product Type</th>
+           <th>Product Material</th>
+       </tr>
+       {{range .Products}}
+       <tr>
+           <td>{{.ProductName}}</td>
+           <td>{{.ProductType}}</td>
+           <td>{{.ProductMaterial}}</td>
+       </tr>
+       {{end}}
+   </table>
+        {{range .Products}}
+        <li>{{.ProductName}}</li>
+        {{end}}
+    </ul>
 {{template "bottom" .}}
