@@ -28,6 +28,9 @@ func(s *Server)Run(){
 	fmt.Println("Server is running on the port",s.address)
 	router.HandleFunc("/template/home",makeHttpHandlers(s.HandlerHomePage))
 	router.HandleFunc("/template/signIn",makeHttpHandlers(s.HandleSignInPage))
+	router.HandleFunc("/template/signUp",makeHttpHandlers(s.HandleSignUpPage))
+	router.HandleFunc("/signUp",makeHttpHandlers(s.HandleSignUp))
+	router.HandleFunc("/signIn",makeHttpHandlers(s.HandleSignIn))
 	if err:=http.ListenAndServe(s.address,router);err!=nil{
 		log.Fatal("Error : ",err)
 	}
@@ -52,6 +55,44 @@ func(s *Server)HandleSignInPage(w http.ResponseWriter,r *http.Request)error{
 	err=tmpl.Execute(w,nil)
 	if err!=nil{
 		return err
+	}
+	return nil
+}
+func(s *Server)HandleSignUpPage(w http.ResponseWriter, r *http.Request)error{
+	tmpl,err:=makeTemplate("templates/sign-up.html")
+	if err!=nil{
+		return err
+	}
+	err=tmpl.Execute(w,nil)
+	if err!=nil{
+		return err
+	}
+	return nil
+}
+
+func(s *Server)HandleSignUp(w http.ResponseWriter,r *http.Request)error{
+	email:=r.FormValue("email")
+	password:=r.FormValue("password")
+	user:=User{
+		Email: email,
+		Password: password,
+	}
+	err:=s.store.InserUser(r.Context(),&user)	
+	if err !=nil{
+		return err
+	}
+	http.Redirect(w,r,"/template/signIn",http.StatusSeeOther)
+	return nil
+}
+func(s *Server)HandleSignIn(w http.ResponseWriter, r *http.Request)error{
+	email:=r.FormValue("email")
+	password:=r.FormValue("password")
+	pass,err:=s.store.VerifyUser(r.Context(),email)
+	if err!=nil{
+		return err
+	}
+	if pass==password{
+		http.Redirect(w,r,"/template/home",http.StatusSeeOther)
 	}
 	return nil
 }

@@ -1,0 +1,16 @@
+{{template "top" .}}
+<h1>This is a sign up page</h1>
+<form id="signUpForm"  method="POST" action="/signUp">
+    <label for="email">Email:</label><br>
+    <input type="text" id="email" name="email" required><br><br>
+    
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+    
+    <input id="signup"type="submit" value="Submit">
+</form>
+</script>
+
+
+
+{{template "bottom" .}}
