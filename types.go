@@ -25,5 +25,4 @@ type Product struct{
 	ProductName string `json:"productName" bson:"product_name"`
 	ProductType string `json:"productType" bson:"product_type"`
 	ProductMaterial string `json:"productMaterial" bson:"product_material"`
-
 }

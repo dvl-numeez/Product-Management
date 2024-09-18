@@ -31,7 +31,6 @@ func(s *Server)Run(){
 	router.HandleFunc("/template/home",makeHttpHandlers(s.HandlerHomePage))
 	router.HandleFunc("/template/signIn",makeHttpHandlers(s.HandleSignInPage))
 	router.HandleFunc("/template/signUp",makeHttpHandlers(s.HandleSignUpPage))
-	router.HandleFunc("/products",makeHttpHandlers(s.HandleProducts))
 	router.HandleFunc("/signUp",makeHttpHandlers(s.HandleSignUp))
 	router.HandleFunc("/signIn",makeHttpHandlers(s.HandleSignIn))
 	if err:=http.ListenAndServe(s.address,router);err!=nil{
@@ -120,21 +119,6 @@ func(s *Server)HandleSignIn(w http.ResponseWriter, r *http.Request)error{
 	}
 	if pass==password{
 		http.Redirect(w,r,"/template/home",http.StatusSeeOther)
-	}
-	return nil
-}
-func(s *Server)HandleProducts(w http.ResponseWriter, r *http.Request)error{
-	type Students struct{
-		Name string
-	}
-	students:=[]Students{{Name:"Numeez"},{Name:"Usaid"},{Name:"Asif"}}
-	templ,err:=makeTemplate("templates/products.html")	
-	if err!=nil{
-		return err
-	}
-	err=templ.Execute(w,students)
-	if err!=nil{
-		return err
 	}
 	return nil
 }
